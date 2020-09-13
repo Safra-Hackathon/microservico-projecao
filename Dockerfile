@@ -13,8 +13,8 @@ COPY ./requirements.txt /etc
 # Install any needed packages specified in requirements.txt
 RUN pip install -r /etc/requirements.txt
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
+# Make port 8000 available to the world outside this container
+EXPOSE 8000
 
 # Define environment variable
 ENV NAME World
