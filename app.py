@@ -1,17 +1,17 @@
-from flask import Flask, request, render_template, session, redirect, jsonify, Response
+from flask import Flask, request
 import pandas as pd
-import requests
 import json
 import numpy
-from sklearn.metrics import r2_score
 import datetime
 import calendar
 
 app = Flask(__name__)
 
-# Connect to mongodb
+@app.route('/help')
+def help():
+    return 'Utilize o endpoint /projection para retornar a projecao dos proximos 3 meses.'
 
-@app.route('/projection',methods=['POST','GET'])
+@app.route('/projection', methods=['POST'])
 
 def proj():
     """
@@ -57,11 +57,10 @@ def proj():
     ret_json = {"safrapay_history": {}, "interest": interest}
 
     for key, value in enumerate(df.values):
-        print(key, value[0], value[1])
         dates = value[0].strftime("%Y-%m-%d")
         ret_json["safrapay_history"][dates] = value[1]
 
     return ret_json
 
 if __name__ == '__main__':
-    app.run(debug=False, port=8000)
+    app.run(host='127.0.0.1', debug=False, port=5000)

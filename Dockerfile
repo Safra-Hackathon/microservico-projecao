@@ -1,23 +1,16 @@
-# Use an official Python runtime as a parent image
-FROM python:3.7.5-slim
+FROM ubuntu:20.04
+RUN apt-get update                          && \
+    apt-get install -y python3              && \
+    apt-get install -y uwsgi                && \
+    apt-get install -y uwsgi-plugin-python3
 
-# Set the working directory to /app
-WORKDIR /app
+RUN apt-get install -y python3-pip
 
-# Copy the current directory contents into the container at /app
-ADD ./app /app
+COPY . /opt/
+RUN pip3 install -r /opt/requirements.txt
 
-# Copy the requirements into the container at /etc
-COPY ./requirements.txt /etc
+COPY uwsgi.ini /etc/uwsgi/apps-enabled/
 
-# Install any needed packages specified in requirements.txt
-RUN pip install -r /etc/requirements.txt
+WORKDIR /opt
 
-# Make port 8000 available to the world outside this container
-EXPOSE 8000
-
-# Define environment variable
-ENV NAME World
-
-# Run app.py when the container launches
-CMD ["python3", "-m", "flask", "run"]
+CMD service uwsgi start; tail -F /var/log/uwsgi/app/uwsgi.log
